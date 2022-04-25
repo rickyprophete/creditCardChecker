@@ -1,27 +1,26 @@
-let params= new URLSearchParams(window.location.search);
-let ccNum= Number(params.get('cc-num'));
-let validateCred=(array)=>{
-  let sum = 0;
-  let times2 = num => {return num*2;}
-  let sub9 = num => {return num-9;}
-  let numAfter = 0;
-  let num = 0;
+let params = new URLSearchParams(window.location.search);
+let ccNum = Number(params.get('cc-num'));
 
-  for(let i = array.length-1; i >= 0; i--){
-    num = array[i];
-    sum = sum + num;
-    if( i > 0 ){
-    numAfter = times2(array[i-1]);
-      if(numAfter > 9){
-        numAfter = sub9(numAfter);
-      }
-    sum = sum + numAfter;
+function validateCred(arr) {
+    let N = arr.length;
+    let temp = 0;
+    let parity = (N - 2) % 2;
+    let checkDigit = arr[N - 1];
+    let sum = 0;
+    sum += checkDigit;
+    for (let i = N - 2; i >= 0; i--) {
+        temp = arr[i];
+        if (i % 2 == parity) {
+            temp *= 2;
+            if (temp > 9) {
+                temp -= 9;
+            }
+        }
+        sum += temp;
     }
-    i--;
-  }
-  return sum % 10 === 0;
+    return (sum % 10 == 0);
 }
-let isValid= validateCred(ccNum) ? "Valid" : "Invalid";
-let statement= `<p>Results: ${ccNum} is ${isValid} <a href="index.html">Start Over!</a></p>`;
+let isValid = validateCred(ccNum) ? "Valid" : "Invalid";
+let statement = `<p>Results: ${ccNum} is ${isValid} <a href="index.html">Start Over!</a></p>`;
 let result = document.getElementById("result");
 result.innerHTML = statement;
